@@ -4,9 +4,11 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "node --test",
-    "start": "node src/server.js"
-  },
+  "start": "node src/server.ts",
+  "dev": "tsx watch src/server.ts",
+  "typecheck": "tsc",
+  "test": "node --test \"test/**/*.test.ts\""
+},
   "keywords": [],
   "author": "",
   "license": "ISC",
@@ -18,5 +20,10 @@
     }
   },
   "packageManager": "pnpm@12.14.0",
-  "type": "module"
+  "type": "module",
+  "devDependencies": {
+    "@types/node": "^26.6.5",
+    "tsx": "^4.23.15",
+    "typescript": "^7.0.2"
+  }
 }

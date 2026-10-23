@@ -1,14 +1,19 @@
 import { test, before, after } from 'node:test';
 import assert from 'node:assert/strict';
-import { createApp } from '../src/app.js';
+import { createApp } from '../src/app.ts';
+import type { Server } from 'node:http';
 
-let server;
-let baseUrl;
+let server:Server;
+let baseUrl:String;
 
 before(async () => {
   server = createApp();
-  await new Promise((resolve) => server.listen(0, resolve));
-  baseUrl = `http://localhost:${server.address().port}`;
+  await new Promise<void>((resolve) => server.listen(0, resolve));
+   const address = server.address();
+  if (address === null || typeof address === "string") {
+    throw new Error("expected the server to listen on a TCP port");
+  }
+  baseUrl = `http://localhost:${address.port}`;
 });
 
 after(() => {
