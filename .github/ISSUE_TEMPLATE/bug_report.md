@@ -10,7 +10,9 @@ labels: bug
 ## What did you expect?
 
 ## Steps to reproduce
+
 1.
 
 ## Environment
+
 <!-- e.g. Node version, OS -->
