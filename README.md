@@ -13,14 +13,16 @@ A backend API built during my 12-month backend mastery plan (Month 1: Backend Fo
 pnpm install
 ```
 
-## Run
+## Scripts
 
-```bash
-pnpm start
-```
+| Command             | What it does                                         |
+| ------------------- | ---------------------------------------------------- |
+| `pnpm dev`          | Run the server with auto-restart on save (tsx watch) |
+| `pnpm start`        | Run the server                                       |
+| `pnpm typecheck`    | Type-check the project (strict TypeScript)           |
+| `pnpm lint`         | Lint with ESLint (type-aware rules)                  |
+| `pnpm format`       | Format all files with Prettier                       |
+| `pnpm format:check` | Check formatting without changing files (used in CI) |
+| `pnpm test`         | Run the tests                                        |
 
-## Test
-
-```bash
-pnpm test
-```
+CI runs `typecheck`, `lint`, `format:check` and `test` on every pull request.
