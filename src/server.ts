@@ -2,7 +2,7 @@ import { createApp } from "./app.ts";
 
 import { loadEnv } from "./env.ts";
 
-const {PORT} = loadEnv()
+const { PORT } = loadEnv();
 
 const server = createApp();
 
