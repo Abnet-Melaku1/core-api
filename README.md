@@ -26,3 +26,11 @@ pnpm install
 | `pnpm test`         | Run the tests                                        |
 
 CI runs `typecheck`, `lint`, `format:check` and `test` on every pull request.
+
+## Configuration
+
+Environment variables are validated at startup. The server refuses to start if one is invalid.
+
+| Variable | Default | Rules                   |
+| -------- | ------- | ----------------------- |
+| `PORT`   | `3000`  | Integer from 1 to 65535 |
