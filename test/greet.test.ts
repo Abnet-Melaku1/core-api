@@ -17,3 +17,8 @@ test("rejects inputs that are not a valid user", () => {
     );
   }
 });
+test("rejects malformed JSON with a clear error", () => {
+  assert.throws(() => greet("not json"), {
+    message: "body must be valid JSON",
+  });
+});
