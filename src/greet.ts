@@ -1,19 +1,11 @@
-type User = { name: string };
+import { z } from "zod";
 
-function isUser(value: unknown): value is User {
-  return (
-    typeof value === "object" &&
-    value !== null &&
-    "name" in value &&
-    typeof value.name === "string"
-  );
-}
+const User = z.object({ name: z.string() });
 
 export function greet(json: string): string {
-  const data: unknown = JSON.parse(json);
-
-  if (!isUser(data)) {
+  const result = User.safeParse(JSON.parse(json));
+  if (!result.success) {
     throw new Error("name must be a string");
   }
-  return `Hello, ${data.name.toUpperCase()}`;
+  return `Hello, ${result.data.name.toUpperCase()}`;
 }
