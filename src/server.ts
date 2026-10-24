@@ -1,6 +1,8 @@
-import { createApp } from "./app.js";
+import { createApp } from "./app.ts";
 
-const PORT = Number(process.env.PORT ?? 3000);
+import { loadEnv } from "./env.ts";
+
+const {PORT} = loadEnv()
 
 const server = createApp();
 
