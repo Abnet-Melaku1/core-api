@@ -1,3 +1,4 @@
+import { z } from "zod";
 export type Result<T> = { ok: true; value: T } | { ok: false; error: string };
 
 export type TaskBase = { id: string; title: string };
@@ -69,4 +70,35 @@ export function transition(task: Task, event: TaskEvent): Result<Task> {
     default:
       return assertNever(task);
   }
+}
+const base = { id: z.string(), title: z.string() };
+
+const TaskSchema = z.discriminatedUnion("status", [
+  z.object({ ...base, status: z.literal("draft") }),
+  z.object({
+    ...base,
+    status: z.literal("active"),
+    startedAt: z.coerce.date(),
+  }),
+  z.object({
+    ...base,
+    status: z.literal("done"),
+    startedAt: z.coerce.date(),
+    completedAt: z.coerce.date(),
+  }),
+  z.object({
+    ...base,
+    status: z.literal("archived"),
+    startedAt: z.coerce.date(),
+    completedAt: z.coerce.date(),
+    archivedAt: z.coerce.date(),
+  }),
+]);
+
+export function parseTask(input: unknown): Result<Task> {
+  const result = TaskSchema.safeParse(input);
+  if (!result.success) {
+    return { ok: false, error: z.prettifyError(result.error) };
+  }
+  return { ok: true, value: result.data };
 }
