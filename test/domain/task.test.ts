@@ -39,3 +39,8 @@ test("an archived task refuses every event", () => {
     });
   }
 });
+test("illegal moves don't compile", () => {
+  const draft = createTask("t1", "Write tests");
+  // @ts-expect-error: a draft cannot be completed without being started
+  complete(draft, at); // completing a DRAFT, skipping start
+});
