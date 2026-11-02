@@ -34,3 +34,16 @@ Environment variables are validated at startup. The server refuses to start if o
 | Variable | Default | Rules                   |
 | -------- | ------- | ----------------------- |
 | `PORT`   | `3000`  | Integer from 1 to 65535 |
+
+## Domain: Tasks
+
+A task moves through a fixed lifecycle, modelled as a state machine in `src/domain/task.ts`:
+
+`draft → active → done → archived` (archived is final)
+
+How illegal states are kept out:
+
+- **Illegal moves don't compile.** Each state is its own type (a discriminated union on `status`), and each move only accepts the state it starts from, so `complete(draftTask)` is a type error.
+- **`transition(task, event)`** applies a move when the state is only known at runtime, returning the new task or a clear error.
+- **Data from outside is validated.** `parseTask()` checks JSON from requests or the database with Zod before it reaches the rules, rejecting unknown statuses and missing dates.
+- **IDs can't be mixed up.** `UserId` and `TaskId` are branded types, so passing one where the other is expected is a compile error.
