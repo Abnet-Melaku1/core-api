@@ -1,6 +1,6 @@
 import { AppError } from "./errors.ts";
 
-type Problem = {
+export type Problem = {
   type: string;
   title: string;
   status: number;
