@@ -1,11 +1,12 @@
 import { randomUUID } from "node:crypto";
 import http from "node:http";
 import { NotFoundError } from "./errors.ts";
-import { toProblem } from "./problem.ts";
+
+import { handleError } from "./error-handler.ts";
 
 export function createApp() {
   return http.createServer((req, res) => {
-    const requestId = `red_${randomUUID()}`;
+    const requestId = `req_${randomUUID()}`;
     res.setHeader("x-request-id", requestId);
 
     try {
@@ -18,7 +19,9 @@ export function createApp() {
 
       throw new NotFoundError(`No route for ${req.method} ${req.url}`);
     } catch (error) {
-      const problem = toProblem(error, req.url ?? "/", requestId);
+      const problem = handleError(error, req.url ?? "/", requestId, (entry) => {
+        console.error(JSON.stringify(entry));
+      });
       res.writeHead(problem.status, {
         "content-type": "application/problem+json",
       });
