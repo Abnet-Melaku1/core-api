@@ -30,3 +30,18 @@ test("unknown routes return 404", async () => {
   const res = await fetch(`${baseUrl}/nope`);
   assert.equal(res.status, 404);
 });
+test("unknown routes return a problem+json 404", async () => {
+  const res = await fetch(`${baseUrl}/nope`);
+  assert.equal(res.status, 404);
+  assert.equal(res.headers.get("content-type"), "application/problem+json");
+
+  const body: unknown = await res.json();
+  // unknown, not any: we don't trust it, we compare it
+  assert.deepEqual(body, {
+    type: "https://core-api.example/problems/not-found",
+    title: "Resource not found",
+    status: 404,
+    detail: "No route for GET /nope",
+    instance: "/nope",
+  });
+});
