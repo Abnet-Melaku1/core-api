@@ -3,8 +3,9 @@ import http from "node:http";
 import { NotFoundError } from "./errors.ts";
 
 import { handleError } from "./error-handler.ts";
-
-export function createApp() {
+import type { LoopMetrics } from "./metrics.ts";
+type AppOptions = { readLoopMetrics: () => LoopMetrics | null };
+export function createApp({ readLoopMetrics }: AppOptions) {
   return http.createServer((req, res) => {
     const requestId = `req_${randomUUID()}`;
     res.setHeader("x-request-id", requestId);
@@ -14,6 +15,25 @@ export function createApp() {
         res.writeHead(200, { "content-type": "application/json" });
 
         res.end(JSON.stringify({ status: "ok" }));
+        return;
+      }
+      if (req.method === "GET" && req.url === "/metrics") {
+        const metrics = readLoopMetrics();
+
+        if (metrics === null) {
+          res.writeHead(503, { "content-type": "text/plain" });
+          res.end("loop metrics: no data yet\n");
+          return;
+        }
+
+        res.writeHead(200, { "content-type": "text/plain" });
+        res.end(
+          [
+            `event_loop_utilization ${metrics.eluUtilization.toFixed(3)}`,
+            `event_loop_lag_p50_ms ${metrics.lagP50Ms.toFixed(1)}`,
+            `event_loop_lag_p99_ms ${metrics.lagP99Ms.toFixed(1)}`,
+          ].join("\n") + "\n",
+        );
         return;
       }
 

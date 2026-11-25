@@ -1,10 +1,14 @@
 import { createApp } from "./app.ts";
 
+import { startLoopMetrics } from "./metrics.ts";
+
 import { loadEnv } from "./env.ts";
 
 const { PORT } = loadEnv();
 
-const server = createApp();
+const loopMetrics = startLoopMetrics();
+
+const server = createApp({ readLoopMetrics: loopMetrics.read });
 
 server.listen(PORT, () => {
   console.log(`core-api listening on http://localhost:${PORT}`);
