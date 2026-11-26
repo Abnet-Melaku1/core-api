@@ -8,7 +8,10 @@ let server: Server;
 let baseUrl: string;
 let fakeMetrics: LoopMetrics | null = null;
 before(async () => {
-  server = createApp({ readLoopMetrics: () => fakeMetrics });
+  server = createApp({
+    readLoopMetrics: () => fakeMetrics,
+    enableDebugRoutes: false,
+  });
   await new Promise<void>((resolve) => server.listen(0, resolve));
   const address = server.address();
   if (address === null || typeof address === "string") {
