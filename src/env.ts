@@ -4,6 +4,11 @@ const Env = z.object({
   PORT: z.coerce.number().int().min(1).max(65535).default(3000),
 
   // coerce:trun the string "6000" tointo the number 6000 first
+
+  ENABLE_DEBUG_ROUTES: z
+    .enum(["true", "false"])
+    .default("false")
+    .transform((value) => value === "true"),
 });
 
 export type Env = z.infer<typeof Env>;
