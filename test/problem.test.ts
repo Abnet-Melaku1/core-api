@@ -4,6 +4,7 @@ import { toProblem } from "../src/problem.ts";
 import {
   ConflictError,
   NotFoundError,
+  PayloadTooLargeError,
   UnauthorizedError,
   ValidationError,
 } from "../src/errors.ts";
@@ -19,6 +20,22 @@ test("NotFoundError maps to 404 problem details", () => {
       type: "https://core-api.example/problems/not-found",
       title: "Resource not found",
       status: 404,
+      detail: "Task t1 does not exist",
+      instance: "/tasks/t1",
+    },
+  );
+});
+test("PayloadTooLargeError maps to 413 problem details", () => {
+  assert.deepEqual(
+    toProblem(
+      new PayloadTooLargeError("Task t1 does not exist"),
+      "/tasks/t1",
+      "req_1",
+    ),
+    {
+      type: "https://core-api.example/problems/payload-too-large",
+      title: "Payload too large",
+      status: 413,
       detail: "Task t1 does not exist",
       instance: "/tasks/t1",
     },

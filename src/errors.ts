@@ -41,3 +41,9 @@ export class UnauthorizedError extends AppError {
     super(401, "unauthorized", "Unauthorized", details, options);
   }
 }
+
+export class PayloadTooLargeError extends AppError {
+  constructor(details: string, options?: ErrorOptions) {
+    super(413, "payload-too-large", "Payload too large", details, options);
+  }
+}

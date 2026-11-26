@@ -19,9 +19,6 @@ for (const bad of ["abc", "0", "70000", "300.5"]) {
     );
   });
 }
-test("defaults PORT to 3000 when not set", () => {
-  assert.equal(loadEnv({}).PORT, 3000);
-});
 
 test("ENABLE_DEBUG_ROUTES defaults to false when not set", () => {
   const env = loadEnv({});

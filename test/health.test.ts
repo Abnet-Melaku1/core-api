@@ -72,3 +72,47 @@ test("GET /metrics returns 503 before the first measurement", async () => {
   assert.equal(res.status, 503);
   assert.equal(await res.text(), "loop metrics: no data yet\n");
 });
+test("POST /greet greets a valid user", async () => {
+  const res = await fetch(`${baseUrl}/greet`, {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify({ name: "Abnet" }),
+  });
+
+  assert.equal(res.status, 200);
+  assert.deepEqual(await res.json(), { message: "Hello, ABNET" });
+});
+
+test("POST /greet rejects an oversized body with 413", async () => {
+  const res = await fetch(`${baseUrl}/greet`, {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify({ name: "a".repeat(20_000) }),
+    // about 20 KB: twice the 10 KB limit
+  });
+
+  assert.equal(res.status, 413);
+  assert.match(await res.text(), /payload-too-large/);
+});
+
+test("POST /greet rejects deeply nested JSON with 422", async () => {
+  const res = await fetch(`${baseUrl}/greet`, {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: "[".repeat(1_000) + "]".repeat(1_000),
+    // only 2 KB, well under the size limit, but 1,000 levels deep
+  });
+
+  assert.equal(res.status, 422);
+  assert.match(await res.text(), /nested deeper than 10 levels/);
+});
+
+test("POST /greet reports bad input as 422, not 500", async () => {
+  const res = await fetch(`${baseUrl}/greet`, {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify({ name: 42 }),
+  });
+
+  assert.equal(res.status, 422);
+});
